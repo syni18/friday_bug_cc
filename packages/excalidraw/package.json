@@ -1,5 +1,5 @@
 {
-  "name": "@excalidraw/excalidraw",
+  "name": "friday_cc",
   "version": "0.17.1",
   "main": "./dist/prod/index.js",
   "type": "module",
@@ -84,7 +84,15 @@
     "pwacompat": "2.0.17",
     "roughjs": "4.6.4",
     "sass": "1.51.0",
-    "tunnel-rat": "0.1.2"
+    "tunnel-rat": "0.1.2",
+    "@sentry/browser": "6.2.5",
+    "@sentry/integrations": "6.2.5",
+    "firebase": "8.3.3",
+    "i18next-browser-languagedetector": "6.1.4",
+    "idb-keyval": "6.0.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "socket.io-client": "4.7.2"
   },
   "devDependencies": {
     "@babel/core": "7.18.9",

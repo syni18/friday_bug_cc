@@ -54,16 +54,16 @@ const MainMenu = Object.assign(
               })}
             >
               {children}
-              {device.editor.isMobile && appState.collaborators.size > 0 && (
+              {/* {device.editor.isMobile && appState.collaborators.size > 0 && (
                 <fieldset className="UserList-Wrapper">
                   <legend>{t("labels.collaborators")}</legend>
                   <UserList
                     mobile={true}
                     collaborators={appState.collaborators}
-                    userToFollow={appState.userToFollow?.socketId || null}
+                    userToFollow={appState.userToFollow?.socketId}
                   />
                 </fieldset>
-              )}
+              )} */}
             </DropdownMenu.Content>
           </DropdownMenu>
         </MainMenuTunnel.In>

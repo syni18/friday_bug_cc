@@ -438,6 +438,13 @@ export type OnUserFollowedPayload = {
   action: "FOLLOW" | "UNFOLLOW";
 };
 
+export interface ExcalidrawAppProps {
+  collabDetails?: { roomId: string; roomKey: string };
+  excalidraw?: ExcalidrawProps;
+  getExcalidrawAPI?: Function;
+  getCollabAPI?: Function;
+}
+
 export interface ExcalidrawProps {
   onChange?: (
     elements: readonly OrderedExcalidrawElement[],

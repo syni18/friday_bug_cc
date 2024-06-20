@@ -149,19 +149,22 @@ export class ActionManager {
         ? canvasActions[name as keyof typeof canvasActions]
         : true)
     ) {
+
       const action = this.actions[name];
       const PanelComponent = action.PanelComponent!;
       PanelComponent.displayName = "PanelComponent";
       const elements = this.getElementsIncludingDeleted();
       const appState = this.getAppState();
       const updateData = (formState?: any) => {
+        console.log("updateData run", formState, this.app);
+
         trackAction(action, "ui", appState, elements, this.app, formState);
 
         this.updater(
           action.perform(
             this.getElementsIncludingDeleted(),
             this.getAppState(),
-            formState,
+            data,
             this.app,
           ),
         );

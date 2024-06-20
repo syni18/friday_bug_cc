@@ -17,7 +17,8 @@ export const actionGoToCollaborator = register({
   label: "Go to a collaborator",
   viewMode: true,
   trackEvent: { category: "collab" },
-  perform: (_elements, appState, collaborator: Collaborator) => {
+  perform: (_elements, appState, collaborator) => {
+    console.log("collaborator",collaborator);
     if (
       !collaborator.socketId ||
       appState.userToFollow?.socketId === collaborator.socketId ||
@@ -115,9 +116,7 @@ export const actionGoToCollaborator = register({
       >
         <Avatar
           color={background}
-          onClick={() => {
-            updateData(collaborator);
-          }}
+          onClick={() => updateData(collaborator)}
           name={collaborator.username || ""}
           src={collaborator.avatarUrl}
           className={statusClassNames}

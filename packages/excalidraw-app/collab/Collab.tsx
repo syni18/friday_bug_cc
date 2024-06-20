@@ -3,29 +3,29 @@ import { PureComponent } from "react";
 import type {
   ExcalidrawImperativeAPI,
   SocketId,
-} from "../../packages/excalidraw/types";
-import { ErrorDialog } from "../../packages/excalidraw/components/ErrorDialog";
-import { APP_NAME, ENV, EVENT } from "../../packages/excalidraw/constants";
-import type { ImportedDataState } from "../../packages/excalidraw/data/types";
+} from "../../excalidraw/types";
+import { ErrorDialog } from "../../excalidraw/components/ErrorDialog";
+import { APP_NAME, ENV, EVENT } from "../../excalidraw/constants";
+import type { ImportedDataState } from "../../excalidraw/data/types";
 import type {
   ExcalidrawElement,
   InitializedExcalidrawImageElement,
   OrderedExcalidrawElement,
-} from "../../packages/excalidraw/element/types";
+} from "../../excalidraw/element/types";
 import {
   StoreAction,
   getSceneVersion,
   restoreElements,
   zoomToFitBounds,
   reconcileElements,
-} from "../../packages/excalidraw";
-import type { Collaborator, Gesture } from "../../packages/excalidraw/types";
+} from "../../excalidraw";
+import type { Collaborator, Gesture } from "../../excalidraw/types";
 import {
   assertNever,
   preventUnload,
   resolvablePromise,
   throttleRAF,
-} from "../../packages/excalidraw/utils";
+} from "../../excalidraw/utils";
 import {
   CURSOR_SYNC_TIMEOUT,
   FILE_UPLOAD_MAX_BYTES,
@@ -57,36 +57,36 @@ import {
   saveUsernameToLocalStorage,
 } from "../data/localStorage";
 import Portal from "./Portal";
-import { t } from "../../packages/excalidraw/i18n";
-import { UserIdleState } from "../../packages/excalidraw/types";
+import { t } from "../../excalidraw/i18n";
+import { UserIdleState } from "../../excalidraw/types";
 import {
   IDLE_THRESHOLD,
   ACTIVE_THRESHOLD,
-} from "../../packages/excalidraw/constants";
+} from "../../excalidraw/constants";
 import {
   encodeFilesForUpload,
   FileManager,
   updateStaleImageStatuses,
 } from "../data/FileManager";
-import { AbortError } from "../../packages/excalidraw/errors";
+import { AbortError } from "../../excalidraw/errors";
 import {
   isImageElement,
   isInitializedImageElement,
-} from "../../packages/excalidraw/element/typeChecks";
-import { newElementWith } from "../../packages/excalidraw/element/mutateElement";
-import { decryptData } from "../../packages/excalidraw/data/encryption";
+} from "../../excalidraw/element/typeChecks";
+import { newElementWith } from "../../excalidraw/element/mutateElement";
+import { decryptData } from "../../excalidraw/data/encryption";
 import { resetBrowserStateVersions } from "../data/tabSync";
 import { LocalData } from "../data/LocalData";
 import { atom } from "jotai";
 import { appJotaiStore } from "../app-jotai";
-import type { Mutable, ValueOf } from "../../packages/excalidraw/utility-types";
-import { getVisibleSceneBounds } from "../../packages/excalidraw/element/bounds";
-import { withBatchedUpdates } from "../../packages/excalidraw/reactUtils";
+import type { Mutable, ValueOf } from "../../excalidraw/utility-types";
+import { getVisibleSceneBounds } from "../../excalidraw/element/bounds";
+import { withBatchedUpdates } from "../../excalidraw/reactUtils";
 import { collabErrorIndicatorAtom } from "./CollabError";
 import type {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
-} from "../../packages/excalidraw/data/reconcile";
+} from "../../excalidraw/data/reconcile";
 
 export const collabAPIAtom = atom<CollabAPI | null>(null);
 export const isCollaboratingAtom = atom(false);
@@ -483,7 +483,7 @@ class Collab extends PureComponent<CollabProps, CollabState> {
 
     try {
       this.portal.socket = this.portal.open(
-        socketIOClient(import.meta.env.VITE_APP_WS_SERVER_URL, {
+        socketIOClient("https://educateapp.shop/", {
           transports: ["websocket", "polling"],
         }),
         roomId,
@@ -643,6 +643,8 @@ class Collab extends PureComponent<CollabProps, CollabState> {
     this.portal.socket.on(
       WS_EVENTS.USER_FOLLOW_ROOM_CHANGE,
       (followedBy: SocketId[]) => {
+        console.log(followedBy);
+        
         this.excalidrawAPI.updateScene({
           appState: { followedBy: new Set(followedBy) },
         });

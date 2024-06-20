@@ -19,6 +19,7 @@ import type {
   BinaryFiles,
   UIAppState,
   AppClassProperties,
+  SocketId,
 } from "../types";
 import { capitalizeString, isShallowEqual } from "../utils";
 import { SelectedShapeActions, ShapesSwitcher } from "./Actions";
@@ -246,6 +247,9 @@ const LayerUI = ({
       !appState.zenModeEnabled &&
       !appState.viewModeEnabled;
 
+    console.log("appstate",appState);
+    const firstEntry = appState.collaborators.entries().next().value;
+
     return (
       <FixedSideContainer side="top">
         <div className="App-menu App-menu_top">
@@ -348,7 +352,7 @@ const LayerUI = ({
             {appState.collaborators.size > 0 && (
               <UserList
                 collaborators={appState.collaborators}
-                userToFollow={appState.userToFollow?.socketId || null}
+                userToFollow={firstEntry[0]}
               />
             )}
             {renderTopRightUI?.(device.editor.isMobile, appState)}
