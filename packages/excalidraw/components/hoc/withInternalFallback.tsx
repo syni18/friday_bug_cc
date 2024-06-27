@@ -2,27 +2,25 @@ import { atom, useAtom } from "jotai";
 import React, { useLayoutEffect, useRef } from "react";
 import { useTunnels } from "../../context/tunnels";
 
-export const withInternalFallback = <P,>(
+export interface WithInternalFallbackProps {
+  __fallback?: boolean;
+  userRole?: string;
+}
+
+export const withInternalFallback = <P extends object>(
   componentName: string,
   Component: React.FC<P>,
 ) => {
+  
   const renderAtom = atom(0);
 
-  const WrapperComponent: React.FC<
-    P & {
-      __fallback?: boolean;
-    }
-  > = (props) => {
+  const WrapperComponent: React.FC<P & WithInternalFallbackProps> = (props) => {
+  console.log("withInternal", props.userRole);
+
+
     const { jotaiScope } = useTunnels();
-    // for rerenders
     const [, setCounter] = useAtom(renderAtom, jotaiScope);
-    // for initial & subsequent renders. Tracked as component state
-    // due to excalidraw multi-instance scanerios.
     const metaRef = useRef({
-      // flag set on initial render to tell the fallback component to skip the
-      // render until mount counter are initialized. This is because the counter
-      // is initialized in an effect, and thus we could end rendering both
-      // components at the same time until counter is initialized.
       preferHost: false,
       counter: 0,
     });
@@ -32,7 +30,6 @@ export const withInternalFallback = <P,>(
       setCounter((c) => {
         const next = c + 1;
         meta.counter = next;
-
         return next;
       });
       return () => {
@@ -51,20 +48,16 @@ export const withInternalFallback = <P,>(
       metaRef.current.preferHost = true;
     }
 
-    // ensure we don't render fallback and host components at the same time
     if (
-      // either before the counters are initialized
       (!metaRef.current.counter &&
         props.__fallback &&
         metaRef.current.preferHost) ||
-      // or after the counters are initialized, and both are rendered
-      // (this is the default when host renders as well)
       (metaRef.current.counter > 1 && props.__fallback)
     ) {
       return null;
     }
 
-    return <Component {...props} />;
+    return <Component {...(props as P)} />;
   };
 
   WrapperComponent.displayName = componentName;

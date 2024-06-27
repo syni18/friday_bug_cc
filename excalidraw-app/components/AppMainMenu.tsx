@@ -16,7 +16,7 @@ export const AppMainMenu: React.FC<{
   setTheme: (theme: Theme | "system") => void;
 }> = React.memo((props) => {
   return (
-    <MainMenu>
+    <MainMenu userRole={"Student@"}>
       <MainMenu.DefaultItems.LoadScene />
       <MainMenu.DefaultItems.SaveToActiveFile />
       <MainMenu.DefaultItems.Export />

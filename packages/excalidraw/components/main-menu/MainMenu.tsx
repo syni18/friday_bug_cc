@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDevice, useExcalidrawSetAppState } from "../App";
 import DropdownMenu from "../dropdownMenu/DropdownMenu";
-
 import * as DefaultItems from "./DefaultItems";
-
 import { UserList } from "../UserList";
 import { t } from "../../i18n";
 import { HamburgerMenuIcon } from "../icons";
-import { withInternalFallback } from "../hoc/withInternalFallback";
+import { WithInternalFallbackProps, withInternalFallback } from "../hoc/withInternalFallback";
 import { composeEventHandlers } from "../../utils";
 import { useTunnels } from "../../context/tunnels";
 import { useUIAppState } from "../../context/ui-appState";
+
+interface MainMenuProps extends WithInternalFallbackProps {
+  children?: React.ReactNode;
+  onSelect?: (event: Event) => void;
+  userRole?: string;
+}
 
 const MainMenu = Object.assign(
   withInternalFallback(
@@ -18,13 +22,10 @@ const MainMenu = Object.assign(
     ({
       children,
       onSelect,
-    }: {
-      children?: React.ReactNode;
-      /**
-       * Called when any menu item is selected (clicked on).
-       */
-      onSelect?: (event: Event) => void;
-    }) => {
+      userRole, // Add userRole here
+    }: MainMenuProps) => {
+      console.log("userRole: ", userRole);
+
       const { MainMenuTunnel } = useTunnels();
       const device = useDevice();
       const appState = useUIAppState();
@@ -33,40 +34,63 @@ const MainMenu = Object.assign(
         ? undefined
         : () => setAppState({ openMenu: null });
 
+      const [shouldRenderUserList, setShouldRenderUserList] = useState(false);
+
+      useEffect(() => {
+        if (device.editor.isMobile && appState.collaborators.size > 0) {
+          setShouldRenderUserList(true);
+        } else {
+          setShouldRenderUserList(false);
+        }
+      }, [appState.collaborators]);
+
       return (
-        <MainMenuTunnel.In>
-          <DropdownMenu open={appState.openMenu === "canvas"}>
-            <DropdownMenu.Trigger
-              onToggle={() => {
-                setAppState({
-                  openMenu: appState.openMenu === "canvas" ? null : "canvas",
-                });
-              }}
-              data-testid="main-menu-trigger"
-              className="main-menu-trigger"
-            >
-              {HamburgerMenuIcon}
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content
-              onClickOutside={onClickOutside}
-              onSelect={composeEventHandlers(onSelect, () => {
-                setAppState({ openMenu: null });
-              })}
-            >
-              {children}
-              {/* {device.editor.isMobile && appState.collaborators.size > 0 && (
-                <fieldset className="UserList-Wrapper">
-                  <legend>{t("labels.collaborators")}</legend>
-                  <UserList
-                    mobile={true}
-                    collaborators={appState.collaborators}
-                    userToFollow={appState.userToFollow?.socketId}
-                  />
-                </fieldset>
-              )} */}
-            </DropdownMenu.Content>
-          </DropdownMenu>
-        </MainMenuTunnel.In>
+        <>
+          <MainMenuTunnel.In>
+            <DropdownMenu open={appState.openMenu === "canvas"}>
+              <DropdownMenu.Trigger
+                onToggle={() => {
+                  setAppState({
+                    openMenu: appState.openMenu === "canvas" ? null : "canvas",
+                  });
+                }}
+                data-testid="main-menu-trigger"
+                className="main-menu-trigger"
+              >
+                {HamburgerMenuIcon}
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content
+                onClickOutside={onClickOutside}
+                onSelect={composeEventHandlers(onSelect, () => {
+                  setAppState({ openMenu: null });
+                })}
+              >
+                {children}
+                {device.editor.isMobile && appState.collaborators.size > 0 && (
+                  <fieldset className="UserList-Wrapper">
+                    <legend>{t("labels.collaborators")}</legend>
+                    <UserList
+                      mobile={true}
+                      collaborators={appState.collaborators}
+                      userToFollow={appState.userToFollow?.socketId || null}
+                      userRole={userRole!} // Pass userRole prop
+                    />
+                  </fieldset>
+                )}
+              </DropdownMenu.Content>
+            </DropdownMenu>
+          </MainMenuTunnel.In>
+          {shouldRenderUserList && (
+            <div style={{ display: "none" }}>
+              <UserList
+                mobile={true}
+                collaborators={appState.collaborators}
+                userToFollow={appState.userToFollow?.socketId || null}
+                userRole={userRole!} // Pass userRole prop
+              />
+            </div>
+          )}
+        </>
       );
     },
   ),

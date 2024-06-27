@@ -17,7 +17,7 @@ export const actionGoToCollaborator = register({
   label: "Go to a collaborator",
   viewMode: true,
   trackEvent: { category: "collab" },
-  perform: (_elements, appState, collaborator) => {
+  perform: (_elements, appState, collaborator:Collaborator) => {
     console.log("collaborator",collaborator);
     if (
       !collaborator.socketId ||
@@ -50,6 +50,11 @@ export const actionGoToCollaborator = register({
     const { socketId, collaborator, withName, isBeingFollowed } =
       data as GoToCollaboratorComponentProps;
 
+      const updateCollaborator = {...collaborator, socketId: socketId}
+
+      if(socketId){
+        updateData(updateCollaborator);
+      }
     const background = getClientColor(socketId, collaborator);
 
     const statusClassNames = clsx({

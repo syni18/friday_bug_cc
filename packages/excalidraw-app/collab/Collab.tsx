@@ -120,6 +120,7 @@ export interface CollabAPI {
 
 interface CollabProps {
   excalidrawAPI: ExcalidrawImperativeAPI;
+  userRef: string;
 }
 
 class Collab extends PureComponent<CollabProps, CollabState> {
@@ -132,6 +133,7 @@ class Collab extends PureComponent<CollabProps, CollabState> {
   private socketInitializationTimer?: number;
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<SocketId, Collaborator>();
+  private userRef: string;
 
   constructor(props: CollabProps) {
     super(props);
@@ -170,6 +172,7 @@ class Collab extends PureComponent<CollabProps, CollabState> {
     this.excalidrawAPI = props.excalidrawAPI;
     this.activeIntervalId = null;
     this.idleTimeoutId = null;
+    this.userRef = props.userRef;
   }
 
   private onUmmount: (() => void) | null = null;
@@ -440,6 +443,10 @@ class Collab extends PureComponent<CollabProps, CollabState> {
       });
     }
 
+    console.log("UserRef: ", this.userRef);
+    // this.setUsername(this.userRef);
+    
+
     if (this.portal.socket) {
       return null;
     }
@@ -483,7 +490,7 @@ class Collab extends PureComponent<CollabProps, CollabState> {
 
     try {
       this.portal.socket = this.portal.open(
-        socketIOClient("https://educateapp.shop/", {
+        socketIOClient("http://localhost:3002", {
           transports: ["websocket", "polling"],
         }),
         roomId,

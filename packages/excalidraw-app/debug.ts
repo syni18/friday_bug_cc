@@ -1,5 +1,6 @@
 declare global {
   interface Window {
+    // @ts-ignore
     debug: typeof Debug;
   }
 }

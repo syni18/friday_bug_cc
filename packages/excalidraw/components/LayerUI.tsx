@@ -94,13 +94,14 @@ interface LayerUIProps {
     shouldPersist: boolean,
     source: "tool" | "generation" | "settings",
   ) => void;
+  userRole:string,
 }
 
 const DefaultMainMenu: React.FC<{
   UIOptions: AppProps["UIOptions"];
 }> = ({ UIOptions }) => {
   return (
-    <MainMenu __fallback>
+    <MainMenu __fallback userRole={"Student$"}>
       <MainMenu.DefaultItems.LoadScene />
       <MainMenu.DefaultItems.SaveToActiveFile />
       {/* FIXME we should to test for this inside the item itself */}
@@ -154,6 +155,7 @@ const LayerUI = ({
   isOpenAIKeyPersisted,
   onOpenAIAPIKeyChange,
   onMagicSettingsConfirm,
+  userRole,
 }: LayerUIProps) => {
   const device = useDevice();
   const tunnels = useInitializeTunnels();
@@ -246,9 +248,6 @@ const LayerUI = ({
       appState.stats.open &&
       !appState.zenModeEnabled &&
       !appState.viewModeEnabled;
-
-    console.log("appstate",appState);
-    const firstEntry = appState.collaborators.entries().next().value;
 
     return (
       <FixedSideContainer side="top">
@@ -352,7 +351,8 @@ const LayerUI = ({
             {appState.collaborators.size > 0 && (
               <UserList
                 collaborators={appState.collaborators}
-                userToFollow={firstEntry[0]}
+                userToFollow={appState.userToFollow?.socketId || null}
+                userRole={userRole}
               />
             )}
             {renderTopRightUI?.(device.editor.isMobile, appState)}

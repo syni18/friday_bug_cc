@@ -329,7 +329,7 @@ export const appLangCodeAtom = atom(
 );
 
 const ExcalidrawWrapper: React.FC<ExcalidrawAppProps> = (props) => {
-  const { collabDetails, excalidraw } = props;
+  const { collabDetails, excalidraw, userRef, userRole } = props;
 
   // Ensure collabDetails and excalidraw are defined before destructuring
   const roomId = collabDetails?.roomId;
@@ -830,6 +830,7 @@ const ExcalidrawWrapper: React.FC<ExcalidrawAppProps> = (props) => {
         {...excalidraw}
         excalidrawAPI={excalidrawRefCallback}
         onChange={onChange}
+        userRole={"userRole"}
         initialData={initialStatePromiseRef.current.promise}
         isCollaborating={isCollaborating}
         onPointerUpdate={collabAPI?.onPointerUpdate}
@@ -878,10 +879,10 @@ const ExcalidrawWrapper: React.FC<ExcalidrawAppProps> = (props) => {
           return (
             <div className="top-right-ui">
               {collabError.message && <CollabError collabError={collabError} />}
-              {/*<LiveCollaborationTrigger*/}
-              {/*  isCollaborating={isCollaborating}*/}
-              {/*  onSelect={() => startCollaboration(roomId,roomKey)}*/}
-              {/*/>*/}
+              <LiveCollaborationTrigger
+              isCollaborating={isCollaborating}
+              onSelect={() => startCollaboration(roomId,roomKey)}
+              />
             </div>
           );
         }}
@@ -989,7 +990,7 @@ const ExcalidrawWrapper: React.FC<ExcalidrawAppProps> = (props) => {
           />
         )}
         {excalidrawAPI && !isCollabDisabled && (
-          <Collab excalidrawAPI={excalidrawAPI} />
+          <Collab excalidrawAPI={excalidrawAPI} userRef={"userRef"}/>
         )}
 
         <ShareDialog

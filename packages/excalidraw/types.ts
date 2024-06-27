@@ -443,6 +443,8 @@ export interface ExcalidrawAppProps {
   excalidraw?: ExcalidrawProps;
   getExcalidrawAPI?: Function;
   getCollabAPI?: Function;
+  userRef: string;
+  userRole: string;
 }
 
 export interface ExcalidrawProps {
@@ -514,6 +516,7 @@ export interface ExcalidrawProps {
     appState: AppState,
   ) => JSX.Element | null;
   aiEnabled?: boolean;
+  userRole: string;
 }
 
 export type SceneData = {

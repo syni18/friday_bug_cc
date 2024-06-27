@@ -1555,6 +1555,7 @@ class App extends React.Component<AppProps, AppState> {
                           isOpenAIKeyPersisted={this.OPENAI_KEY_IS_PERSISTED}
                           onOpenAIAPIKeyChange={this.onOpenAIKeyChange}
                           onMagicSettingsConfirm={this.onMagicSettingsConfirm}
+                          userRole={this.props.userRole}
                         >
                           {this.props.children}
                         </LayerUI>
